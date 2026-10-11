@@ -2,28 +2,12 @@
 
 このファイルは、日ごとの作業状況を時次進捗形式で記録するためのものです。
 
-## 2026-08-25
+## 2026-10-11
 
-### 12時進捗
-- 朝一ルーティンとして `AGENTS.md`、前回分の `HISTORY.md`、WordPress版の `HANDOFF.md` と `PRELAUNCH_REVIEW.md` を確認した。
-- 2026-08-22分の履歴を `History-archive/HISTORY-260822.md` へアーカイブし、本日分の `HISTORY.md` を作成した。前回作成済みで未コミットの `History-archive/HISTORY-260819.md` も内容を変えず保持している。
-- `git status --short --branch` と `git pull --ff-only` を実行し、作業ブランチが `feature/wordpress`、リモートと同期済み（`Already up to date.`）であることを確認した。既存のGit管理外 `handoff/` は受け渡し用データとして保持している。
-- 公開前確認は項目1「仮情報、実在情報、画像権利」まで完了している。次は項目2「PC・スマートフォンの表示」から項目6「本番環境、SSL、権限、バックアップ、切り戻し」までを順に進める。
-- 本番公開には、正式データへの差し替え、公開環境でのデモフォーム確認、編集者権限の確認、別PCまたはステージングでの復元確認、スマートフォン実機確認、運用方針の決定が残っている。
-
-### 14時進捗
-- 公開前確認の項目2として、現行Localサイトの12 URLを1920、1600、1599、1024、1023、768、767、430、429pxの9幅、計108状態で確認した。横スクロール、画像欠落、重複ID、`h1`、デモ案内、旧電話・住所、電話リンク、PHPエラー漏出は0件だった。
-- PC 1600pxとSP 390pxを目視し、SPメニューの開閉・`aria-expanded`・Escape、FAQのクリックを確認した。サイトマップ20 URLと内部リンク・画像152 URLはすべてHTTP 200、ブラウザー警告・エラーと現行nginxエラーは0件だった。
-- 項目3としてForminator 1.57.0の必須・同意・メール形式・確認・戻る・入力保持・SP表示を確認した。メール形式エラーの投入キーを`validation_message`へ修正して日本語化し、Localでダミー送信後も通知設定0件、DB保存0件、Mailpit受信0件、デモ完了文を確認した。
-- Forminatorを一時停止した場合の準備中案内と再有効化後の復旧も確認し、`FORMINATOR_GUIDE.md`と`PRELAUNCH_REVIEW.md`へ結果を記録した。
-- 項目4の権限確認で、標準編集者が全固定ページ、スラッグ、構造を変更できる設計差分を検出した。`hidamari-site-core`を0.6.0へ更新し、ホーム＋指定6固定ページだけ編集可能、固定ページの作成・削除不可、タイトル・スラッグ・公開状態・親子構造・テンプレート保持、対象投稿meta認可を実装した。
-- `tools/local-editor-capability-check.php`を追加し、仮編集者と仮下書きだけで68項目を検証して全件合格した。仮ユーザーと仮下書きは削除され、標準投稿11件（公開10件＋初期投稿のゴミ箱1件）、FAQ13件、利用フロー8件、料金30行が前後一致した。
-
-### 15時進捗
-- 権限制限0.6.0を含むWPvivid統合バックアップを作成し、タスクID`wpvivid-4229c1f36728a`、削除防止ロック有効を確認した。受け渡し用コピーは46,581,810 bytes、SHA-256は`25EBF5C758E9B228609926FF26F3353A35A0F2A279002BFE59D771D550FFB267`で元ファイルと一致し、6パッケージとプラグイン0.6.0収録を確認した。
-- `tools/local-wpvivid-restore-check.ps1`、復元状態確認PHP、一時PHPルーターを追加した。最新版ZIPを現行サイトと分離した一時WordPressと専用MySQL DBへ展開し、SQL20テーブルを実投入してURLを一時URLへ置換した。
-- 復元先で内部状態22/22、公開12/12 URL、ForminatorフォームID 106・保存0件、仮管理者のログインに合格した。終了後は専用DB、一時ファイル、仮管理者、ポート8097を削除し、現行LocalサイトがHTTP 200のままであることを確認した。
-- `PRODUCTION_RUNBOOK.md`を追加し、ステージング復元、HTTPS、公開当日、権限、バックアップ保持、監視、更新、切り戻し、完了判定を整理した。`PRELAUNCH_REVIEW.md`へ項目4〜6、`HANDOFF.md`、`CONTENT_MODEL.md`、各READMEへ最新版バックアップ、権限、復元結果、残作業を反映した。
-- こちらで実行できる公開前項目1〜5と、項目6の手順準備は完了した。本番URL、ホスティング、DNS・SSL、実ユーザー、物理スマートフォン、運用担当者・承認者が必要な実環境作業だけを未完了として残した。
-- レビュワー受け渡し用として、Git管理外の`handoff/260825/`へ検証済み最新版WPvivid ZIP 1本と自己完結した`README.md`をまとめた。READMEには復元方法、環境・版情報、確認済み事項、本番待ちの範囲、個人情報入力禁止とバックアップの機密取扱いを記載した。
-- 受け渡しフォルダーが2ファイルだけであること、ZIPが6パッケージ＋管理情報を読めること、コピー元・コピー先のSHA-256が一致すること、READMEに旧プラグイン版や認証値が混入していないことを確認した。バックアップ本体はGitへ追加しない。
+### 21時進捗
+- Organization移行後の `Digilumi-Asahikawa-Dev/Hidamari-Fukushi-Keikaku` への接続を確認した。作業開始時のブランチは `feature/wordpress`。既存の `SITEMAP.md` の変更とGit管理外 `handoff/` は保持した。
+- 新URLに対する `git ls-remote` が成功し、`main`、`feature/wordpress`、`static-v1.0` を確認した。旧URLでの `git pull --ff-only` も成功した。
+- ローカル `origin` のfetch/push URLをOrganizationの新URLへ更新し、新URLでの `git pull --ff-only` が `Already up to date.` と返ることを確認した。
+- GitHub連携の接続ユーザーは `AoyamaATM`。OrganizationがGitHubアプリのインストール先に含まれ、リポジトリ情報の取得に成功した。リポジトリ情報の `permissions` は `pull`、`push`、`admin` などがtrueだった。
+- 個別ユーザーの権限詳細APIはGitHub連携アプリの権限制約により403（`Resource not accessible by integration`）だった。リポジトリ情報取得とGit接続は成功しており、このAPIに限った制限として記録した。
+- 前回の2026-08-25分の履歴を `History-archive/HISTORY-260825.md` へアーカイブし、本日分の履歴を作成した。
