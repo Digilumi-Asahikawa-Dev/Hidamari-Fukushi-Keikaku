@@ -15,7 +15,7 @@
 ## GitHub Pages公開構成
 
 - 公開元：`main` ブランチの `/docs`
-- 公開基準URL：[https://aoyamaatm.github.io/Hidamari-Fukushi-Keikaku/](https://aoyamaatm.github.io/Hidamari-Fukushi-Keikaku/)
+- 公開基準URL：[https://digilumi-asahikawa-dev.github.io/Hidamari-Fukushi-Keikaku/](https://digilumi-asahikawa-dev.github.io/Hidamari-Fukushi-Keikaku/)
 - `docs/.nojekyll` により、Jekyllを介さず静的ファイルとして配信する
 
 ## プロジェクト資料

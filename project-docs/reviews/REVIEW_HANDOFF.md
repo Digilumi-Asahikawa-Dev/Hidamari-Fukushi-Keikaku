@@ -1,7 +1,7 @@
 # ひだまり福祉計画 レビュー用ハンドオフ
 
 > [!NOTE]
-> この資料は2026-07-22に作成した配布パッケージ用のレビュー案内です。レビューは完了しています。現在の構成は [README](../../README.md)、進行状況は [ROADMAP](../../ROADMAP.md)、公開版は [GitHub Pages](https://aoyamaatm.github.io/Hidamari-Fukushi-Keikaku/) を参照してください。
+> この資料は2026-07-22に作成した配布パッケージ用のレビュー案内です。レビューは完了しています。現在の構成は [README](../../README.md)、進行状況は [ROADMAP](../../ROADMAP.md)、公開版は [GitHub Pages](https://digilumi-asahikawa-dev.github.io/Hidamari-Fukushi-Keikaku/) を参照してください。
 
 ## レビュー対象
 
