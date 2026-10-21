@@ -52,6 +52,8 @@ Node.jsは安定版24系の `24.22.1` 以上を使用します。これは[2026-
 
 起動処理は標準の `C:\Program Files\nodejs\node.exe` を使用し、毎回パスと版を表示・検証します。別の場所へインストールした場合は、`$env:HIDAMARI_NODE_PATH` に更新済み `node.exe` の絶対パスを設定してください。PATHやCodex同梱版への自動切り替えは行わず、未導入・未修正版・要件外の版では停止します。
 
+`--version` を実行する前に、ファイル情報の版とOpenJS Foundationの有効な電子署名を検証します。コマンドラッパー、シンボリックリンク、ジャンクション経由の指定も拒否します。別の場所を指定する場合も、公式Windows版の実体を直接指定してください。検証を省略するオプションは設けません。古い同梱版は確認目的でも起動せず、必要な調査はファイル情報を読み取って行います。
+
 このPCのPATH上の `pnpm.cmd` は古い同梱Node.jsを起動するため使用しません。初回は更新済みNode.jsと同じインストール先のnpmから、`package.json` 指定のpnpmを作業用フォルダーへ導入します。リポジトリのルートで実行してください。
 
 ```powershell
@@ -66,9 +68,11 @@ if ($LASTEXITCODE -ne 0) { throw 'pnpmの準備に失敗しました。' }
 
 `.build-tools/` はGit管理外です。`run-pnpm.ps1` はpnpmが指定版 `11.7.0` であることを確認し、検証済みNode.jsからJavaScriptエントリーポイントを直接起動します。子プロセス用のPATHにも同じNode.jsを先頭に設定します。pnpmが指定版と一致しない場合は起動前に停止します。
 
+子プロセス用のPATHからは、Codex同梱Node.jsのディレクトリと同梱コマンドの `dependencies/bin/` を除外し、`npm_node_execpath` と `npm_execpath` も検証済みの起動先に揃えます。変更はラッパー実行中に限定し、終了時に元へ戻します。pnpmの `engineStrict: true` でNode.js要件を依存関係の導入時にも適用します。制限を無効化したり、同梱ランタイムを直接指定したりして回避しないでください。
+
 以降の `pnpm` 操作は `./tools/run-pnpm.ps1` を経由します。別PCでもその環境の修正済みNode.jsを確認し、このPC固有のパスを流用しないでください。これらは制作コマンドの設定であり、Codex本体・プラグイン内部のランタイムを更新するものではありません。
 
-起動処理を変更した場合は `powershell -NoProfile -ExecutionPolicy Bypass -File ./tools/test-node-runtime.ps1` で未修正版・要件外の版・同梱版・pnpmの版不一致を拒否することを確認します。版の異常系はバッチファイルの代役で検証し、古いNode.js本体は起動しません。
+起動処理を変更した場合は `powershell -NoProfile -ExecutionPolicy Bypass -File ./tools/test-node-runtime.ps1` で未修正版・要件外の版・同梱版・リンク経由・署名不正・pnpmの版不一致を拒否することを確認します。版・署名の異常系はテスト用の値で検証し、古いNode.js本体は起動しません。リンク拒否テストでは一時フォルダー内にジャンクションを作成するため、その操作が許可された環境で実行してください。
 
 ## 静的版CSSビルド
 

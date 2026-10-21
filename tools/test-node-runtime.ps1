@@ -23,17 +23,16 @@ try {
   $approvedNode = Get-HidamariNodePath
   $passed++
   foreach ($version in @('24.19.0', '24.22.0', '22.23.4', '25.0.0', '26.12.1', '24.22.1-rc.1')) {
-    # Version stubs are batch files, never old Node.js binaries.
-    $stub = Join-Path $testRoot "node-$version.cmd"
-    [IO.File]::WriteAllText($stub, "@echo off`r`necho v$version`r`nexit /b 0`r`n")
     $message = if ($version -in @('24.19.0', '24.22.0')) { 'older than' } else { 'stable Node.js 24.x' }
-    Assert-Rejected $stub $message
+    $rejected = $false
+    try { Assert-HidamariNodeVersion $version } catch {
+      if ($_.Exception.Message -notlike "*$message*") { throw }
+      $rejected = $true
+    }
+    if (-not $rejected) { throw "Unsupported Node.js version accepted: $version" }
     $passed++
   }
-  $newerStub = Join-Path $testRoot 'node-newer.cmd'
-  [IO.File]::WriteAllText($newerStub, "@echo off`r`necho v24.23.0`r`nexit /b 0`r`n")
-  $env:HIDAMARI_NODE_PATH = $newerStub
-  if ((Get-HidamariNodePath) -ne $newerStub) { throw 'A newer stable 24.x patch was rejected.' }
+  Assert-HidamariNodeVersion '24.23.0'
   $passed++
   Assert-Rejected (Join-Path $testRoot 'missing.exe') 'Install Node.js'
   $passed++
@@ -42,18 +41,46 @@ try {
 
   $bundleRoot = Join-Path $testRoot 'codex-runtimes'
   New-Item -ItemType Directory -Path $bundleRoot | Out-Null
-  $bundleStub = Join-Path $bundleRoot 'node.cmd'
-  $marker = Join-Path $testRoot 'bundled-runtime-started.txt'
-  [IO.File]::WriteAllText($bundleStub, "@echo off`r`necho started > `"$marker`"`r`necho v24.22.1`r`n")
+  $bundleStub = Join-Path $bundleRoot 'node.exe'
+  [IO.File]::WriteAllText($bundleStub, 'This is not an executable.')
   Assert-Rejected $bundleStub 'bundled Node.js is not approved'
-  if (Test-Path -LiteralPath $marker) { throw 'The bundled runtime was probed before rejection.' }
   $passed++
 
   # A PATH entry must not override the explicitly selected executable.
   $env:HIDAMARI_NODE_PATH = $approvedNode
   $env:PATH = $bundleRoot + [IO.Path]::PathSeparator + $previousPath
   if ((Get-HidamariNodePath) -ne $approvedNode) { throw 'PATH replaced the approved Node.js.' }
-  if (Test-Path -LiteralPath $marker) { throw 'The PATH runtime was started.' }
+  $passed++
+
+  $wrapperStub = Join-Path $testRoot 'node.cmd'
+  [IO.File]::WriteAllText($wrapperStub, '@echo off')
+  Assert-Rejected $wrapperStub 'command wrappers are not allowed'
+  $passed++
+  $fakeDirectory = Join-Path $testRoot 'standalone'
+  New-Item -ItemType Directory -Path $fakeDirectory | Out-Null
+  $fakeNode = Join-Path $fakeDirectory 'node.exe'
+  [IO.File]::WriteAllText($fakeNode, 'This is not a Node.js executable.')
+  Assert-Rejected $fakeNode 'not an official Node.js executable'
+  $passed++
+  $linkedDirectory = Join-Path $testRoot 'linked-node'
+  New-Item -ItemType Junction -Path $linkedDirectory -Target $fakeDirectory | Out-Null
+  Assert-Rejected (Join-Path $linkedDirectory 'node.exe') 'links are not allowed'
+  $passed++
+
+  $childPath = Get-HidamariNodeChildPath $approvedNode ('C:\sample\codex-runtimes\runtime\dependencies\bin\fallback;C:\sample\codex-runtimes\runtime\dependencies\node\bin;C:\sample\codex-runtimes\runtime\dependencies\native\git\cmd;C:\Windows\System32')
+  if ($childPath -match 'dependencies\\(bin|node)\\' -or $childPath -notmatch 'native\\git\\cmd') {
+    throw 'Child PATH did not remove bundled launchers while preserving other tools.'
+  }
+  $passed++
+  $env:HIDAMARI_NODE_PATH = $approvedNode
+  function Get-Item {
+    param([string] $LiteralPath, [switch] $Force)
+    [pscustomobject] @{ Attributes = [IO.FileAttributes]::Archive; Parent = $null; VersionInfo = [pscustomobject] @{ OriginalFilename = 'node.exe'; ProductVersion = '24.19.0' } }
+  }
+  try { Assert-Rejected $approvedNode 'older than' } finally { Remove-Item Function:Get-Item }
+  $passed++
+  function Get-AuthenticodeSignature { param([string] $LiteralPath) [pscustomobject] @{ Status = 'HashMismatch' } }
+  try { Assert-Rejected $approvedNode 'valid OpenJS Foundation signature' } finally { Remove-Item Function:Get-AuthenticodeSignature }
   $passed++
 
   $fixtureTools = Join-Path $testRoot 'tools'

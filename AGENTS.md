@@ -35,6 +35,7 @@
 - Windowsの制作・ビルド・パッケージ管理では、実行前に `tools/node-runtime.ps1` の `Get-HidamariNodePath` でパスと版を確認する。Node.jsは安定版24系の `24.22.1` 以上を使用し、更新時には公式のセキュリティ告知も再確認する。
 - 標準パスは `C:\Program Files\nodejs\node.exe`。別の場所では `HIDAMARI_NODE_PATH` へ修正済みNode.jsの絶対パスを設定する。利用できない場合は停止し、PATHやCodex同梱版へ切り替えない。
 - PATH上の `pnpm` / `pnpm.cmd` を直接実行せず、READMEの初回準備後に `./tools/run-pnpm.ps1` を使用する。`package.json` のpnpm指定版を維持し、更新済みNode.jsから直接起動する。
+- 古い同梱Node.jsは `--version`・検証目的を含め起動禁止とする。版の確認は実行せずファイル情報を読み取る。ファイル情報・署名・リンク・PATHの制限を一時的に無効化したり、別の起動経路や直接指定で回避したりしない。検証に失敗した場合は修正版の導入・設定を直すまで停止する。
 - 別PC・クラウドでは実際の起動経路を確認し、このWindows PCのパスを流用しない。同梱バイナリを手作業で差し替えず、Codex本体やプラグイン内部まで更新したとは扱わない。
 
 ## 確認

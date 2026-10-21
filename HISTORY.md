@@ -22,3 +22,12 @@
 - 新ラッパー経由の `check:site` は9 HTMLと共通JSの検査に合格し、`build:css:wordpress` も成功した。pnpmの子プロセスが `C:/Program Files/nodejs/node.exe` / `v24.22.1` を使用すること、終了コード7が保持されることも確認した。WordPressテーマ・静的サイト・生成CSS・依存関係lockfile・PHP復元スクリプトに差分なし。見た目とPHP処理は変更せず、追加のブラウザー表示・PHP動作確認は実施していない。
 - 静的版は `origin/main` 基点の専用worktree・`codex/fix-node-runtime-security` へ共通ツールと手順だけを個別反映した。13項目のテスト、9ページの静的検査、静的CSSビルドが成功し、サイトソース・生成CSS・lockfileに差分なし。共通6スクリプトがWordPress側と内容一致することも確認した。
 - 静的版のコミット `3e03e68` をpushし、PR #2「Node.jsの修正版を使う制作コマンドへ変更」を作成した。URL: https://github.com/Digilumi-Asahikawa-Dev/Hidamari-Fukushi-Keikaku/pull/2 。GitHub連携の作成APIは403のため、ログイン済みChromeから作成・Open状態を確認し、このチャットへ添付した。mainへのマージとPages公開は実施していない。静的版worktreeはpush済み・未コミット変更なしを確認してアーカイブを依頼した。
+
+### 3時進捗
+- ユーザーから古い同梱Node.jsを使わない制限をさらに強める指示を受け、制作コマンドの実行前検証と子プロセスの環境を強化した。PHPの更新待ちと復元スクリプトは変更していない。
+- `tools/node-runtime.ps1` は、元ファイル名・ファイル情報の版・OpenJS Foundationの有効な署名を実行前に確認する。未修正版は `--version` も起動せず停止し、検証後の実行結果もファイル情報と照合する。コマンドラッパー、シンボリックリンク、ジャンクションを含む経路は拒否する。
+- `tools/run-pnpm.ps1` は子プロセス用PATHからCodex同梱Node.jsと `dependencies/bin` のコマンドを除去し、`npm_node_execpath` と `npm_execpath` も検証済みの起動先へ設定する。終了時には元の環境へ戻す。`pnpm-workspace.yaml` の `engineStrict: true` を有効化し、実際の設定取得でもtrueを確認した。
+- READMEとAGENTS.mdに、検証目的での旧版起動・直接指定・制限の一時無効化による回避を行わず、検証に失敗したら修正版の設定を直すまで停止する方針を追記した。適用範囲は本プロジェクトのWindows制作コマンドであり、OS全体・Codex本体・プラグイン内部の実行制御ではない。
+- 起動制限の19項目、3変更スクリプトの構文解析、9ページの静的検査、WordPress CSSビルドが成功した。子プロセスの実行先は `C:/Program Files/nodejs/node.exe`、`npm_node_execpath` も同じで、PATHに同梱Node.js・同梱起動コマンドが残らないことを確認した。版・署名の異常系はテスト用の値、リンク拒否は一時フォルダー内のジャンクションで検証し、古いNode.js本体は起動していない。ジャンクションテストはサンドボックス内の権限制約で失敗したため、承認された権限で再実行して成功した。
+- 静的版のPR #2は既にmainへマージ済み（`f1daa30`）だったため、最新mainから新しいworktree・`codex/harden-node-runtime` で個別反映した。同じ19項目、依存復元、9ページの静的検査、静的CSSビルドが成功した。共通4ファイルの内容一致と、両側のサイトソース・生成CSS・依存lockfile・PHP復元スクリプトに差分がないことを確認した。
+- 静的版のコミット `48b7ab9` をpushし、ChromeでPR #3「古い同梱Node.jsの起動制限を強化」を作成、Open状態とコンフリクトなしを確認してこのチャットへ添付した。URL: https://github.com/Digilumi-Asahikawa-Dev/Hidamari-Fukushi-Keikaku/pull/3 。mainへの追加マージは実施していない。既存の `SITEMAP.md` とGit管理外 `handoff/` は保持した。
