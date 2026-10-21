@@ -12,13 +12,12 @@ if (-not (Test-Path -LiteralPath $siteRoot -PathType Container)) {
   throw "Site directory was not found: $siteRoot"
 }
 
-$node = Get-Command node -ErrorAction SilentlyContinue
-if (-not $node) {
-  $errors.Add("Node.js was not found, so JavaScript syntax could not be checked.")
-} elseif (-not (Test-Path -LiteralPath $mainJavaScript -PathType Leaf)) {
+. (Join-Path $PSScriptRoot 'node-runtime.ps1')
+$nodePath = Get-HidamariNodePath
+if (-not (Test-Path -LiteralPath $mainJavaScript -PathType Leaf)) {
   $errors.Add("JavaScript entry file was not found: $mainJavaScript")
 } else {
-  & $node.Source --check $mainJavaScript
+  & $nodePath --check $mainJavaScript
   if ($LASTEXITCODE -ne 0) {
     $errors.Add("JavaScript syntax check failed: $mainJavaScript")
   }

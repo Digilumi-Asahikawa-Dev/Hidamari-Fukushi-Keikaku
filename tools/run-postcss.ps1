@@ -8,19 +8,11 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $postcssScript = Join-Path $repoRoot "node_modules\postcss-cli\index.js"
 
 if (-not (Test-Path -LiteralPath $postcssScript)) {
-  Write-Error "PostCSS CLI is not installed. Run 'pnpm install' first."
+  Write-Error "PostCSS CLI is not installed. Run './tools/run-pnpm.ps1 install --frozen-lockfile' first."
 }
 
-$nodeCommand = Get-Command node -ErrorAction SilentlyContinue
-if ($nodeCommand) {
-  $nodePath = $nodeCommand.Source
-} else {
-  $codexNode = Join-Path $env:USERPROFILE ".cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe"
-  if (-not (Test-Path -LiteralPath $codexNode)) {
-    Write-Error "Node.js was not found on PATH or in the Codex bundled runtime."
-  }
-  $nodePath = $codexNode
-}
+. (Join-Path $PSScriptRoot 'node-runtime.ps1')
+$nodePath = Get-HidamariNodePath
 
 & $nodePath $postcssScript @PostcssArgs
 exit $LASTEXITCODE
