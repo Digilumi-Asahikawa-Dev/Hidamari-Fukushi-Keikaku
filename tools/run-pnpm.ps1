@@ -19,13 +19,19 @@ if (-not (Test-Path -LiteralPath $pnpmScript -PathType Leaf)) {
 }
 
 $previousPath = $env:PATH
+$previousNodeExecPath = $env:npm_node_execpath
+$previousNpmExecPath = $env:npm_execpath
 Push-Location $repoRoot
 try {
-  $env:PATH = (Split-Path -Parent $nodePath) + [IO.Path]::PathSeparator + $previousPath
+  $env:PATH = Get-HidamariNodeChildPath $nodePath $previousPath
+  $env:npm_node_execpath = $nodePath
+  $env:npm_execpath = $pnpmScript
   & $nodePath $pnpmScript @pnpmArguments
   $pnpmExitCode = $LASTEXITCODE
 } finally {
   $env:PATH = $previousPath
+  $env:npm_node_execpath = $previousNodeExecPath
+  $env:npm_execpath = $previousNpmExecPath
   Pop-Location
 }
 exit $pnpmExitCode

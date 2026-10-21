@@ -1,5 +1,6 @@
 storeDir: .pnpm-store
 confirmModulesPurge: false
+engineStrict: true
 
 allowBuilds:
   '@parcel/watcher': false
