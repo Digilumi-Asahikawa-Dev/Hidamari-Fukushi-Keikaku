@@ -31,6 +31,12 @@
 - 名前は分かりやすくし、コメントは必要な箇所に簡潔に書く。
 - 一時的な近道より、保守しやすい実装を優先する。
 
+## Node.js・pnpmの実行
+- Windowsの制作・ビルド・パッケージ管理では、実行前に `tools/node-runtime.ps1` の `Get-HidamariNodePath` でパスと版を確認する。Node.jsは安定版24系の `24.22.1` 以上を使用し、更新時には公式のセキュリティ告知も再確認する。
+- 標準パスは `C:\Program Files\nodejs\node.exe`。別の場所では `HIDAMARI_NODE_PATH` へ修正済みNode.jsの絶対パスを設定する。利用できない場合は停止し、PATHやCodex同梱版へ切り替えない。
+- PATH上の `pnpm` / `pnpm.cmd` を直接実行せず、READMEの初回準備後に `./tools/run-pnpm.ps1` を使用する。`package.json` のpnpm指定版を維持し、更新済みNode.jsから直接起動する。
+- 別PC・クラウドでは実際の起動経路を確認し、このWindows PCのパスを流用しない。同梱バイナリを手作業で差し替えず、Codex本体やプラグイン内部まで更新したとは扱わない。
+
 ## 確認
 - 可能な範囲で、変更内容に合ったテストや確認コマンドを実行する。
 - ローカルサイトのPC／SP表示確認は、利用できる場合はChromeプラグインを優先し、ローカルHTTPサーバー経由で画面幅・DOM・操作・コンソールエラーを確認する。ヘッドレスChromeの確認スクリプトは予備手段として使用する。
@@ -44,15 +50,15 @@
 - CSSを変更する場合は、原則として `docs/scss/style.scss` を編集する。
 - HTMLが読み込む表示用CSSは `docs/css/style.css` とする。
 - `docs/css/style.css`、`docs/scss/style.css`、`docs/scss/style.min.css` は生成物として扱う。
-- SCSS変更後は `pnpm run build:css` を実行して、SassコンパイルとAutoprefixer適用後の生成CSSを同期する。
+- SCSS変更後は `./tools/run-pnpm.ps1 run build:css` を実行して、SassコンパイルとAutoprefixer適用後の生成CSSを同期する。
 - Autoprefixerの対象ブラウザは `.browserslistrc` で管理する。
-- CSS作業中の監視には `pnpm run watch:css` を使用できる。
+- CSS作業中の監視には `./tools/run-pnpm.ps1 run watch:css` を使用できる。
 - 緊急時を除き、生成CSSだけを直接編集しない。直接編集した場合も、最終的にはSCSSへ反映してビルド結果と同期する。
 
 ### WordPress版
 - WordPressテーマのCSSを変更する場合は `wordpress/themes/hidamari-care-asahikawa/assets/scss/style.scss` を編集する。
 - 表示用の `wordpress/themes/hidamari-care-asahikawa/assets/css/style.css` は生成物として扱う。
-- SCSS変更後は `pnpm run build:css:wordpress` を実行する。監視時は `pnpm run watch:css:wordpress` を使用する。
+- SCSS変更後は `./tools/run-pnpm.ps1 run build:css:wordpress` を実行する。監視時は `./tools/run-pnpm.ps1 run watch:css:wordpress` を使用する。
 - 静的版へ同じ変更を反映する指示がない限り、`docs/scss/style.scss` と静的生成CSSは変更しない。
 
 ## 共同作業

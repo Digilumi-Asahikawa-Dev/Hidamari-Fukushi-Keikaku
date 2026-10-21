@@ -5,6 +5,7 @@ desktop.ini
 # Dependencies
 node_modules/
 .pnpm-store/
+.build-tools/
 
 # Local WordPress runtime
 .wordpress-studio/

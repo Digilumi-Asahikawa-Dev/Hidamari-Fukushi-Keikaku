@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": ">=24.22.1 <25"
+  },
   "description": "Build tooling for the Hidamari Fukushi Keikaku static site.",
   "scripts": {
     "build:css": "powershell -NoProfile -ExecutionPolicy Bypass -File ./tools/build-css.ps1",

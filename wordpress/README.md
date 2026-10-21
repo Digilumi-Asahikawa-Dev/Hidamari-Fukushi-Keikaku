@@ -14,6 +14,10 @@
 
 ## 現在の検証環境
 
+以下は従来の動作確認記録です。PHPの今回のセキュリティ修正を適用済みという意味ではありません。2026-10-22にユーザーがLocal by Flywheelの提供版を確認し、修正版PHPがまだ利用できないとの報告を受けたため、PHPの切り替えと復元確認スクリプトのPHP指定変更は保留しています。利用可能になった段階で修正済みの版・設定を確認し、PHP lint、表示、フォーム、ログ、復元を再検証します。
+
+Node.js・pnpmの準備と起動方法は[ルートREADME](../README.md#nodejspnpmの準備windows)を参照してください。
+
 - Local: 10.1.1+6939
 - WordPress: 7.0.2
 - PHP: 8.2.29
@@ -35,7 +39,7 @@ Windows版Localでは、PHP 8.2.29のImagick拡張読み込み警告がPHPログ
 ## フェーズ10以降の進め方
 
 1. Git管理下のテーマソースを変更する。
-2. SCSS変更時は `pnpm run build:css:wordpress` を実行する。監視する場合は `pnpm run watch:css:wordpress` を使用する。
+2. SCSS変更時は `./tools/run-pnpm.ps1 run build:css:wordpress` を実行する。監視する場合は `./tools/run-pnpm.ps1 run watch:css:wordpress` を使用する。
 3. ジャンクション経由でLocalへ変更が反映されていることを確認する。
 4. Localのサイトシェルでテーマ状態とWordPressデータを確認する。
 5. Localと同じPHP 8.2系で全PHPファイルをlintする。
